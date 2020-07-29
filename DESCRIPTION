@@ -1,0 +1,21 @@
+Package: TOSI
+Type: Package
+Title: TwO-directional SImultaneous inference for high-dimensional
+        models
+Version: 0.1.3
+Update: 2020-07-30
+Author: Wei Liu
+Maintainer: Wei Liu <weiliu@smail.swufe.edu.cn>
+Description: This package provides a general framework of two directional simultaneous inference
+    (TOSI) for high-dimensional as well as the fixed dimensional models with manifest
+    variable or latent variable structure, such as high-dimensional mean models, high-
+    dimensional sparse regression models, and high-dimensional latent factors models.
+    TOSI is making the simultaneous inference on a set of parameters from two directions,
+    one is testing whether the estimated zero parameters indeed are zero and the other is
+    testing whether there exists zero in the parameter set of non-zero.
+Depends: MASS, glmnet, hdi
+License: GPL
+Encoding: UTF-8
+LazyData: true
+NeedsCompilation: no
+Packaged: 2020-07-29 04:09:12 UTC; Liuxianju

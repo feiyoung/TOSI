@@ -1,0 +1,7 @@
+#exportPattern("^[[:alpha:]]+")
+export(gendata_Fac, Factorm, gsspFactorm, TSrowMaxST, TSrowMinST,
+       TSentryMaxST, TSentryMinST,MultiTSrowMaxST, MultiTSrowMinST,
+       cor.mat, bic.spfac,
+       assessBsFun, ccorFun, cv.spfac, indvec2matFun, indvec2matFun,
+       gendata_Mean,MeanMax,MeanMin,MultiMeanMax,MultiMeanMin,
+       gendata_Reg,RegMax,RegMin,MultiRegMax,MultiRegMin,linReg_TOSI)
