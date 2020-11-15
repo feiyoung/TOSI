@@ -7,7 +7,7 @@
 \usage{
   MultiTSrowMinST(X, G2,  alpha=0.05, Nsplit= 5, sub.frac=0.5)
 }
-\argumenMultiTS{
+\arguments{
   \item{X}{a \code{n}-by-\code{p} matrix, the observed data}
   \item{G2}{a positive vector with values between 1 and p, the set of H02.}
   \item{alpha}{a positive number, the significant level.}

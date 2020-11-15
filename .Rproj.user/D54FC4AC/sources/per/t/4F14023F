@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1595992465556.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "512|76|547|0|\n550|73|587|0|\n590|73|629|0|\n681|78|717|0|\n718|94|757|0|\n758|93|797|0|\n800|60|813|0|\n815|82|875|0|\n878|82|937|0|\n939|80|985|0|\n988|97|1050|0|\n1053|97|1115|0|\n",
+    "hash" : "1201771520",
+    "id" : "4F14023F",
+    "lastKnownWriteTime" : 1598620980,
+    "last_content_update" : 1598620995675,
+    "path" : "~/TOSI/R/hello.R",
+    "project_path" : "R/hello.R",
+    "properties" : {
+        "cursorPosition" : "630,0",
+        "scrollLine" : "503"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
