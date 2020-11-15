@@ -2,9 +2,9 @@
 \alias{linReg_TOSI}
 \title{TOSI-assited regression.}
 \description{
- Variable selection based on dichotomy.The TOSI also give the direction of choosing penalty parameter $\lambda$, e.g., if
-$H_{0,S}$ is rejected, we should choose smaller value for $\lambda$ until $ H_{0,{S}^c}$ is accepted ($S$ is the estimates of {S}_0$ from penalized regression such as Lasso); If
-$ \tilde H_{0,{S}}}$ is accepted, we should choose larger value for $\lambda$ until $ H_{0,{S}}^c$ is rejected. If $ H_{0,{S}}^c}$  is accepted and $\tilde H_{0,{S}}}$ is rejected, then the  optimal  $\lambda$  in some sense is obtained.
+ Variable selection based on dichotomy.The TOSI also give the direction of choosing penalty parameter $lambda$, e.g., if
+$H_{0,S}$ is rejected, we should choose smaller value for $lambda$ until $ H_{0,{S}^c}$ is accepted ($S$ is the estimates of {S}_0$ from penalized regression such as Lasso); If
+$ \tilde H_{0,{S}}}$ is accepted, we should choose larger value for $lambda$ until $ H_{0,{S}}^c$ is rejected. If $ H_{0,{S}}^c}$  is accepted and $\tilde H_{0,{S}}}$ is rejected, then the  optimal  $\lambda$  in some sense is obtained.
 }
 \usage{
   linReg_TOSI(X, Y, alpha=0.05, seed=1, sub.frac=0.3, standardized=F)
