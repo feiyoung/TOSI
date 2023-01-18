@@ -1,15 +1,16 @@
 \name{MeanMin}
 \alias{MeanMin}
-\title{Two-Stage Minimum Mean Test method for the mean vector.}
+\title{Data splitting-based two-stage minimum mean testing method for the mean vector.}
 \description{
-  Conduct the simultaneous inference for a set of mean components as for the NUll hypothesises H02, where H02 assume the set of mean components exist zero.
+  Conduct the simultaneous inference for a set of mean components in the the Null hypothesises H02 that assumes the set of mean components exist zero.
 }
 \usage{
-  MeanMin(X, G2, alpha=0.05,frac.size=0.5, seed=1, standardized=F)
+  MeanMin(X, G2, Nsplit = 5, alpha=0.05, frac.size=0.5, seed=1, standardized=F)
 }
 \arguments{
   \item{X}{a \code{n}-by-\code{p} matrix, the observed data}
   \item{G2}{a positive vector with values between 1 and p, the set of H02.}
+  \item{Nsplit}{a positive integer, the random split times used, default as 5.}
   \item{alpha}{a positive number, the significant level.}
   \item{frac.size}{a positive number between 0 and 1, the proportion of the sample used in stage I.}
   \item{seed}{a non-negative integer, the random seed.}
@@ -17,10 +18,10 @@
 }
 
 \value{
-  return a matrix with class "Min-test", row names 'chiq_test' , and column names 'CriticalValue', 'TestStatistic', 'reject_status', and 'p-value', including all the information about testing.
+   return a vector with names 'CriticalValue', 'TestStatistic', 'reject_status', 'p-value' if Nsplit=1, and 'reject_status' and 'adjusted_p-value' if Nsplit>1.
 }
-\references{Wei Liu, Huazhen Lin, Jin Liu (2020). Two-directional simultaneous inference for high-dimensional models.
-}
+
+
 \author{
   Liu Wei
 }
@@ -28,17 +29,19 @@
   nothing
 }
 \seealso{
-  \code{\link{gendata_Mean}}, \code{\link{MeanMax}}
+  \code{\link{gendata_Mean}}, \code{\link{MeanMin}}
 }
 \examples{
   ### Example
   n <- 100; p <- 100; i <- 1
   s0 <- 5 # First five components are nonzeros
-  rho <- 5; tau <- 1;
+  rho <- 4; tau <- 1;
   dat1 <- gendata_Mean(n, p, s0, seed=i, rho, tau)
   # ex1: H01 is false
-  MeanMin(dat1$X, 1:s0, seed=2)
+  MeanMin(dat1$X, 1:s0)
+  MeanMin(dat1$X, 1:s0, Nsplit=1)
   # ex1: H01 is true
-  MeanMin(dat1$X, 1:p, seed=2)
+  MeanMin(dat1$X, 1:p)
+  MeanMin(dat1$X, 1:p, Nsplit=1)
 }
 \keyword{Simultanous inference}

@@ -5,7 +5,7 @@
   Factor analysis to extract latent linear factor and estimate loadings.
 }
 \usage{
-  Factorm(x, q==NULL)
+  Factorm(x, q=NULL)
 }
 \arguments{
   \item{x}{a \code{n}-by-\code{p} matrix, the observed data}

@@ -36,11 +36,11 @@
 \examples{
   datlist1 <- gendata_Fac(n= 100, p = 300, rho=1)
   X <- datlist1$X
-  spfac <- gsspFactorm(X, q=NULL)
+  spfac <- gsspFactorm(X, q=NULL)  # use default values for lambda's.
   assessBsFun(spfac$sphB, datlist1$B0)
   lambda1_set <- seq(0.2, 2, by=0.3)
   lambda2_set <- 1:8
-  lamList <- cv.spfac(X, lambda1_set, lambda2_set, nfolds=5)
+  lamList <- cv.spfac(X, lambda1_set, lambda2_set, nfolds=5) # select lambda's values using CV method.
   spfac <- gsspFactorm(X, q=NULL,lamList$lamcv.min[1], lamList$lamcv.min[2])
   assessBsFun(spfac$sphB, datlist1$B0)
 

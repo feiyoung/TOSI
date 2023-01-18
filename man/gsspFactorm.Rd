@@ -1,6 +1,6 @@
 \name{gsspFactorm}
 \alias{gsspFactorm}
-\title{High Dimensional Sparse  Factor Analysis Model}
+\title{High Dimensional Sparse  Factor Model}
 \description{
   sparse factor analysis to extract latent linear factor and estimate row-sparse and entry-wise-sparse loading matrix.
 }
@@ -24,7 +24,7 @@
   \item{propvar}{a positive number between 0 and 1, the explained propotion of cummulative variance by the \code{q} factors.}
   \item{egvalues}{a n-dimensional(n<=p) or p-dimensional(p<n) vector, the eigenvalues of sample covariance matrix.}
 }
-\references{Wei Liu, Huazhen Lin, Jin Liu (2020). Estimation and inference on high-dimensional sparse factor models.
+\references{Liu, W., Lin, H., Liu, J., & Zheng, S. (2020). Two-directional simultaneous inference for high-dimensional models. arXiv preprint arXiv:2012.11100.
 }
 \author{
   Liu Wei

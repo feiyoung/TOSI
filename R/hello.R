@@ -472,95 +472,26 @@ indvec2matFun <- function(vec, nrow){
   return(t(S))
 }
 
-#  Two-Stage Maximum Entry Test method for rows of loading matrix in factor model
-TSentryMaxST <- function(X, S1,  alpha=0.05, seed=1, sub.frac=0.5, q=NULL){
-
-  if(!is.matrix(S1)) S1 <- matrix(S1, 1,2)
-  fac <- Factorm(X);
-  if(is.null(q)) q <- fac$q
-  n <- nrow(X); p <- ncol(X)
-
-  ns <- round(n* sub.frac)
-  set.seed(seed)
-  ids <- sample(n, ns)
-  hB <- Factorm(X[ids, ], q=q)$hB
-  S1vec <- indMat2vecFun(S1, p)
-  hBG1vec <- hB[S1vec]
-  K1 <- min(1, length(S1vec))
-  id1 <- order(abs(hBG1vec), decreasing = T)[1:K1]
-  G1 <- S1vec[id1]
-  #indvec2matFun(G1, p); datlist1$B0[G1]
-
-  idt <- setdiff(1:n, ids)
-  nt <- n - ns
-
-  fac <- Factorm(X[idt, ], q = q)
-  dLam1 <- sqrt(fac$sigma2vec[S1[id1,1]])
-  hBG1 <- fac$hB[G1]
-  maxC1 <- qchisq(1-alpha, 1)
-  T1 <- nt * sum(hBG1*hBG1)/dLam1^2
-  PV <-  1- pchisq(T1, 1)
-  pMat <- matrix(0,1,4)
-  pMat[1,] <- c(maxC1, T1, T1 > maxC1, PV)
-  row.names(pMat) <- c('chiq_test')
-
-  colnames(pMat) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
-  class(pMat) <- 'Max-test'
-  return(pMat)
-}
-
-# Two-Stage Minimum Entry Test method for rows of loading matrix in factor model
-TSentryMinST <- function(X, S2,  alpha=0.05, seed=1, sub.frac=0.5, q= NULL){
-
-  if(!is.matrix(S2)) S2 <- matrix(S2, 1,2)
-  fac <- Factorm(X);
-  if(is.null(q)) q <- fac$q
-  n <- nrow(X); p <- ncol(X)
-
-  ns <- round(n* sub.frac)
-  set.seed(seed)
-  ids <- sample(n, ns)
-  hB <- Factorm(X[ids, ], q=q)$hB
-  S2vec <- indMat2vecFun(S2, p)
-  hBG1vec <- hB[S2vec]
-  K1 <- min(1, length(S2vec))
-  id1 <- order(abs(hBG1vec), decreasing = F)[1:K1]
-  G1 <- S2vec[id1]
-
-  idt <- setdiff(1:n, ids)
-  nt <- n - ns
-
-  fac <- Factorm(X[idt, ], q = q)
-  dLam1 <- sqrt(fac$sigma2vec[S2[id1,1]])
-  hBG1 <- fac$hB[G1]
-
-  maxC1 <- qchisq(1-alpha, 1)
-  T1 <- nt * sum(hBG1*hBG1)/dLam1^2
-  PV <-  1- pchisq(T1, 1)
-  pMat <- matrix(0,1,4)
-  pMat[1,] <- c(maxC1, T1, T1 > maxC1, PV)
-  row.names(pMat) <- c('chiq_test')
-
-
-  colnames(pMat) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
-  class(pMat) <- 'Max-test'
-  return(pMat)
-}
-
 # Multi-split Two-Stage Maximum Row Test method for rows of loading matrix in factor model
-MultiTSrowMaxST <- function(X, G1,  alpha=0.05, Nsplit= 5, sub.frac=0.5){
+FacRowMaxST <- function(X, G1, q=NULL, Nsplit= 5, sub.frac=0.5, alpha=0.05, standardized=FALSE,seed=1){
 
-  fac <- Factorm(X);  q <- fac$q
+  if(is.null(q)){
+    fac <- Factorm(X);  q <- fac$q
+  }
   n <- nrow(X)
   ns <- round(n* sub.frac)
-  T1vec <- numeric(Nsplit)
+  Pvec <- numeric(Nsplit)
   for(im in 1:Nsplit){
     # im <- 3
-    set.seed(im)
+    set.seed(im+seed)
     ids <- sample(n, ns)
-    hB <- Factorm(X[ids, ], q=q)$hB
+    fac_test <- Factorm(X[ids, ], q=q)
+    hB <- fac_test$hB
     hBG1Mat <- matrix(hB[G1, ], nrow=length(G1), ncol=q)
-    norm1bG1 <- apply(hBG1Mat,1, function(x) sum(abs(x)))
+    norm1bG1 <- apply(hBG1Mat,1, function(x) sum(x^2))
+    if(standardized){
+      norm1bG1 <-  norm1bG1 / fac_test$sigma2vec[G1]
+    }
     K1 <- min(1, length(G1) )
     id1 <- order(norm1bG1, decreasing = T)[1:K1]
     G11 <- G1[id1]
@@ -568,39 +499,56 @@ MultiTSrowMaxST <- function(X, G1,  alpha=0.05, Nsplit= 5, sub.frac=0.5){
     idt <- setdiff(1:n, ids)
     nt <- length(idt)
     fac <- Factorm(X[idt, ], q = q)
-    dLam1 <- sqrt(fac$sigma2vec[G11])
+    dLam1 <- fac$sigma2vec[G11]
     hBG1 <- fac$hB[G11, ]
-    T1vec[im] <- nt*sum(hBG1*hBG1)/dLam1^2
+    T1 <- nt*sum(hBG1*hBG1)/dLam1
+    Pvec[im] <-  1- pchisq(T1, q)
+    if(Nsplit==1){
+      maxC1 <- qchisq(1-alpha, q)
+      T1 <- nt * sum(hBG1*hBG1)/dLam1^2
+      PV <-  1- pchisq(T1, q)
+      res <- c(maxC1, T1, T1 > maxC1, PV)
+      names(res) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
+      return(res)
+    }
   }
 
-  T1 <- median(T1vec)
-  maxC1 <- qchisq(1-alpha, q)
 
-  PV <-  1- pchisq(T1, q)
-  pMat <- matrix(0,1,4)
-  pMat[1,] <- c(maxC1, T1, T1 > maxC1, PV)
-  row.names(pMat) <- c('chiq_test')
+  Pvec <- p.adjust(Pvec, method="BH")
+  gamma <- alpha
+  reject <- 0
+  if(mean(Pvec <= gamma) >= 1/Nsplit){
+    reject <- 1
+  }
+  adj.pval <- min(Pvec)
 
+  res <- c('reject_status'=reject,   'adjusted_p-value'=adj.pval)
 
-  colnames(pMat) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
-  class(pMat) <- 'Max-test'
-  return(pMat)
+  return(res)
 }
 
 # Multi-split Two-Stage Minimum Row Test method for rows of loading matrix in factor model
-MultiTSrowMinST <- function(X, G2,  alpha=0.05, Nsplit= 5, sub.frac=0.5){
+FacRowMinST <- function(X, G2,  q=NULL, Nsplit= 5, sub.frac=0.5, alpha=0.05, standardized=FALSE,seed=1){
 
-  fac <- Factorm(X);  q <- fac$q
+  if(is.null(q)){
+    fac <- Factorm(X);  q <- fac$q
+  }
   n <- nrow(X)
   ns <- round(n* sub.frac)
-  T1vec <- numeric(Nsplit)
+  Pvec <- numeric(Nsplit)
+
+
   for(im in 1:Nsplit){
     # im <- 1
-    set.seed(im)
+    set.seed(im+seed)
     ids <- sample(n, ns)
-    hB <- Factorm(X[ids, ], q=q)$hB
+    fac_test <- Factorm(X[ids, ], q=q)
+    hB <- fac_test$hB
     hBG1Mat <- matrix(hB[G2, ], nrow=length(G2), ncol=q)
-    norm1bG1 <- apply(hBG1Mat,1, function(x) sum(abs(x)))
+    norm1bG1 <- apply(hBG1Mat,1, function(x) sum(x^2))
+    if(standardized){
+      norm1bG1 <-  norm1bG1 / sqrt(fac_test$sigma2vec[G2])
+    }
     K1 <- min(1, length(G2) )
     id1 <- order(norm1bG1, decreasing = F)[1:K1]
     G21 <- G2[id1]
@@ -613,505 +561,30 @@ MultiTSrowMinST <- function(X, G2,  alpha=0.05, Nsplit= 5, sub.frac=0.5){
     fac <- Factorm(X[idt, ], q = q)
     dLam1 <- sqrt(fac$sigma2vec[G21])
     hBG1 <- fac$hB[G21, ]
-    T1vec[im] <- nt*sum(hBG1*hBG1)/dLam1^2
-  }
 
-  T1 <- mean(T1vec)
-  minC1 <- qchisq(1-alpha, q)
+    T1 <- nt*sum(hBG1*hBG1)/dLam1^2
+    Pvec[im] <-  1- pchisq(T1, q)
+    if(Nsplit==1){
+      minC2 <- qchisq(1-alpha, q)
+      R2 <- nt * sum(hBG1*hBG1)/dLam1^2
+      PV <-  1- pchisq(R2, q)
+      res <- c(minC2, R2, R2 > minC2, PV)
+      names(res) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
 
-  PV <-  1- pchisq(T1, q)
-  pMat <- matrix(0,1,4)
-  pMat[1,] <- c(minC1, T1, T1 > minC1, PV)
-  row.names(pMat) <- c('chiq_test')
-
-  colnames(pMat) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
-  class(pMat) <- 'min-test'
-  return(pMat)
-}
-
-# Mean testing ------------------------------------------------------------
-gendata_Mean <- function(n, p, s0= floor(p/2), seed=1, rho= 1, tau=1){
-  mu <- rep(0, p)
-  set.seed(1)
-  mu[1:s0] <- runif(s0)* rho
-  set.seed(seed)
-  X <- mvrnorm(n=n, mu=mu, Sigma = tau*cor.mat(p, rho=0.5))
-  return(list(X=X, mu=mu, p0=s0))
-}
-
-MeanMax <- function(X, G1, alpha=0.05,frac.size=0.5, seed=1, standardized=F){
-  n <- nrow(X)
-
-  if(length(G1) <= 10){
-    frac.size <- 0.1
-  }
-  ns <- round(n*frac.size)
-  set.seed(seed)
-  ids <- sample(n, ns)
-  hmu <- colMeans(X[ids,])
-
-  abs_muG <- abs(hmu[G1])
-  if(standardized){
-    std <- apply(as.matrix(X[ids, G1], ncol=length(G1)), 2, sd)
-    abs_muG <- abs_muG / std
-  }
-  K <- min(1, length(G1) )
-  id1 <- order(abs_muG, decreasing = T)[1:K]
-  test.set <- G1[id1]
-  tsXid <- setdiff(1:n, ids)
-  nt <- length(tsXid)
-  X1 <- X[tsXid, test.set]
-
-  hmu <- mean(X1)
-  hsigma2 <- var(X1)
-
-
-  maxC1 <- qchisq(1-alpha, 1)
-  T1 <- nt * hmu^2/ hsigma2
-  PV <-  1- pchisq(T1, 1)
-  pMat <- matrix(0,1,4)
-  pMat[1,] <- c(maxC1, T1, T1 > maxC1, PV)
-  row.names(pMat) <- c('chiq_test')
-
-
-  colnames(pMat) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
-  class(pMat) <- 'Max-test'
-  return(pMat)
-}
-
-MeanMin <- function(X, G2,  alpha=0.05,frac.size=0.5, seed=1, standardized=F){
-  n <- nrow(X)
-  if(length(G2) <= 10){
-    frac.size = 0.1
-  }
-  ns <- round(n*frac.size)
-  set.seed(seed)
-  ids <- sample(n, ns)
-  hmu <- colMeans(X[ids,])
-  abs_muG <- abs(hmu[G2])
-  if(standardized){
-    std <- apply(as.matrix(X[ids, G2], ncol=length(G2)), 2, sd)
-    abs_muG <- abs_muG / std
-  }
-  K <- min(1, length(G2) )
-  id1 <- order(abs_muG)[1:K]
-  test.set <- G2[id1]
-  tsXid <- setdiff(1:n, ids)
-  nt <- length(tsXid)
-  X1 <- X[tsXid, test.set]
-
-  hmu <- mean(X1)
-  hsigma2 <- var(X1)
-
-
-  maxC1 <- qchisq(1-alpha, 1)
-  T1 <- nt * hmu^2/ hsigma2
-  PV <-  1- pchisq(T1, 1)
-  pMat <- matrix(0,1,4)
-  pMat[1,] <- c(maxC1, T1, T1 > maxC1, PV)
-  row.names(pMat) <- c('chiq_test')
-
-
-  colnames(pMat) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
-  class(pMat) <- 'Min-test'
-  return(pMat)
-}
-MultiMeanMax <- function(X, G1, Nsplit = 5, alpha=0.05,frac.size=0.5, seed=1, standardized=F){
-  n <- nrow(X)
-  test.set <- G1
-  if(length(test.set)<=10){
-    frac.size <- 0.1
-  }
-  ns <- round(n*frac.size)
-  Tvec <- numeric(Nsplit)
-  for(im in 1: Nsplit){
-
-    set.seed(im+seed)
-    ids <- sample(n, ns)
-    hmu <- colMeans(X[ids,])
-    abs_muG <- abs(hmu[test.set])
-    if(standardized){
-      std <- apply(as.matrix(X[ids, test.set], ncol=length(test.set)), 2, sd)
-      abs_muG <- abs_muG / std
+      return(res)
     }
-    K <- min(1, length(test.set))
-    id1 <- order(abs_muG, decreasing = T)[1:K]
-    test.set1 <- test.set[id1]
-    its <- setdiff(1:n, ids)
-    n0 <- length(its)
-
-    hmu <- mean(X[its, test.set1])
-    hsd <- sd(X[its, test.set])
-    Tvec[im] <- sqrt(n0) * abs(hmu / hsd)
   }
-  T1 <- median(Tvec)
-  minC1 <- qnorm(1-alpha/2)
 
-  PV <-  2*(1- pnorm(T1))
-  pMat <- matrix(0,1,4)
-  pMat[1,] <- c(minC1, T1, T1 > minC1, PV)
-  row.names(pMat) <- c('Z_test')
 
-  colnames(pMat) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
-  class(pMat) <- 'max-test'
-  return(pMat)
+  Pvec <- p.adjust(Pvec, method="BH")
+  gamma <- alpha
+  reject <- 0
+  if(mean(Pvec <= gamma) >= 1/Nsplit){
+    reject <- 1
+  }
+  adj.pval <- min(Pvec)
+
+  res <- c('reject_status'=reject,   'adjusted_p-value'=adj.pval)
+
+  return(res)
 }
-MultiMeanMin <- function(X, G2, Nsplit = 5, alpha=0.05,frac.size=0.5, seed=1,standardized=F){
-  n <- nrow(X)
-  test.set <- G2
-  if(length(test.set) <= 10){
-    frac.size = 0.1
-  }
-  ns <- round(n*frac.size)
-  Tvec <- numeric(Nsplit)
-  for(im in 1: Nsplit){
-
-    set.seed(im+seed)
-    ids <- sample(n, ns)
-    hmu <- colMeans(X[ids,])
-    abs_muG <- abs(hmu[test.set])
-    if(standardized){
-      std <- apply(as.matrix(X[ids, test.set], ncol=length(test.set)), 2, sd)
-      abs_muG <- abs_muG / std
-    }
-    K <- min(1, length(test.set))
-    id1 <- order(abs_muG, decreasing = F)[1:K]
-    test.set1 <- test.set[id1]
-    its <- setdiff(1:n, ids)
-    n0 <- length(its)
-
-    hmu <- mean(X[its, test.set1])
-    hsd <- sd(X[its, test.set])
-    Tvec[im] <- sqrt(n0) * abs(hmu / hsd)
-  }
-  T1 <- median(Tvec)
-  minC1 <- qnorm(1-alpha/2)
-
-  PV <-  2*(1- pnorm(T1))
-  pMat <- matrix(0,1,4)
-  pMat[1,] <- c(minC1, T1, T1 > minC1, PV)
-  row.names(pMat) <- c('Z_test')
-
-  colnames(pMat) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
-  class(pMat) <- 'min-test'
-  return(pMat)
-}
-
-# Regssion testing --------------------------------------------------------
-gendata_Reg <- function(n=100, p = 20, s0=5, rho=1, seed=1){
-  set.seed(1)
-  beta <- rep(0,p)
-  beta[1:s0] <- runif(s0,0,2) *rho
-  set.seed(seed)
-  Sigma <- matrix(NA, p, p)
-  for (i in 1:p) Sigma[i,] <- 0.8^(abs(i-(1:p)))
-  X <- matrix(rnorm(n*p), n, p)
-  X <- t(t(chol(Sigma))%*%t(X))
-
-  # Only first three coefficients are not zeros
-  Y <- X %*%beta+rt(n,4)/sqrt(2)
-  return(list(Y=Y, X=X, beta0=beta, index_nz=1:s0))
-}
-
-RegMax <-  function(X, Y,  G1, alpha=0.05, seed=1, sub.frac=0.5, standardized=F) {
-  require(glmnet)
-  require(hdi)
-  require(SIS)
-  require(scalreg)
-  n <- dim(X)[1]
-  p <- dim(X)[2]
-  # Devide sample into two parts
-  if(length(G1) <10){
-    sub.frac <- 0.2
-  }
-  n1 <- floor(sub.frac*n)
-  n0 <- n-floor(n1)
-  set.seed(seed)
-  S1 <- sample(1:n, n1, replace=FALSE)
-  X.sub <- X[S1,]
-  if(standardized){
-    X.sub <- scale(X.sub)
-  }
-
-  Y.sub <- Y[S1]
-  cvfit <- cv.glmnet(X.sub, Y.sub, intercept=FALSE)
-  cf <- as.numeric(coef(cvfit, s="lambda.min"))[-1]
-  # cf <- as.numeric(glmnet(X.sub, Y.sub, lambda=1e-6)$beta)
-  cf_testset <- cf[G1]
-  # sort the coefficients
-  K <- min(1, length(G1) ) # only caputure the maximum coefs.
-  id_test.set <- order(abs(cf_testset), decreasing = T)[1:K]
-  test.set <- G1[id_test.set]
-  tsXid <- setdiff(1:n, S1)
-  Xts <- X[tsXid, ]; n0 <- nrow(Xts)
-  Yts <- Y[tsXid]
-
-
-  score.nodewiselasso = getFromNamespace("score.nodewiselasso", "hdi")
-  node <- score.nodewiselasso(Xts, wantTheta=TRUE, verbose=FALSE, lambdaseq="quantile",
-                              parallel=FALSE, ncores=2, oldschool = FALSE, lambdatuningfactor = 1)
-  Theta <- node$out
-  Gram<- t(Xts)%*%Xts/n0
-
-  sreg <- scalreg::scalreg(Xts,Yts)
-  beta.hat <- sreg$coefficients
-  sigma.sq <- sum((Yts-Xts%*%beta.hat)^2)/(n0-sum(abs(beta.hat)>0))
-
-  index <- test.set
-
-  Omega <- (t(Theta[,index])%*%Gram%*%Theta[,index])*sigma.sq
-  beta.db <- beta.hat[index]+Theta[index,]%*%t(Xts)%*%(Yts-Xts%*%beta.hat)/n0
-  T1 <- n*beta.db^2 / Omega;
-
-  maxC1 <- qchisq(1-alpha, 1)
-  PV <-  1- pchisq(T1, 1)
-  pMat <- matrix(0,1,4)
-  pMat[1,] <- c(maxC1, T1, T1 > maxC1, PV)
-  row.names(pMat) <- c('chiq_test')
-
-
-  colnames(pMat) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
-  class(pMat) <- 'Max-test'
-  return(pMat)
-}
-
-
-RegMin <-  function(X, Y,  G2, alpha=0.05, seed=1, sub.frac=0.5, standardized=F) {
-  require(glmnet)
-  require(hdi)
-  require(SIS)
-  require(scalreg)
-  n <- dim(X)[1]
-  p <- dim(X)[2]
-  # Devide sample into two parts
-  if(length(G2) <10){
-    sub.frac <- 0.2
-  }
-  n1 <- floor(sub.frac*n)
-  n0 <- n-floor(n1)
-  set.seed(seed)
-  S1 <- sample(1:n, n1, replace=FALSE)
-  X.sub <- X[S1,]
-  if(standardized){
-    X.sub <- scale(X.sub)
-  }
-  Y.sub <- Y[S1]
-  lambda <- 1e-7
-  glmnet1 <- glmnet(X.sub, Y.sub, lambda=lambda)
-  cf <- coef(glmnet1)[-1]
-  cf_testset <- cf[G2]
-  # sort the coefficients
-  K <- min(1, length(G2) ) # only caputure the minimum coef.
-  id_test.set <- order(abs(cf_testset))[1:K]
-  test.set <- G2[id_test.set]
-  tsXid <- setdiff(1:n, S1)
-  Xts <- X[tsXid, ]; n0 <- nrow(Xts)
-  Yts <- Y[tsXid]
-
-
-  score.nodewiselasso = getFromNamespace("score.nodewiselasso", "hdi")
-  node <- score.nodewiselasso(Xts, wantTheta=TRUE, verbose=FALSE, lambdaseq="quantile",
-                              parallel=FALSE, ncores=2, oldschool = FALSE, lambdatuningfactor = 1)
-  Theta <- node$out
-  Gram<- t(Xts)%*%Xts/n0
-
-  sreg <- scalreg::scalreg(Xts,Yts)
-  beta.hat <- sreg$coefficients
-  sigma.sq <- sum((Yts-Xts%*%beta.hat)^2)/(n0-sum(abs(beta.hat)>0))
-
-  index <- test.set
-
-  Omega <- (t(Theta[,index])%*%Gram%*%Theta[,index])*sigma.sq
-  beta.db <- beta.hat[index]+Theta[index,]%*%t(Xts)%*%(Yts-Xts%*%beta.hat)/n0
-  T1 <- n * beta.db^2 / Omega;
-
-  maxC1 <- qchisq(1-alpha, 1)
-  PV <-  1- pchisq(T1, 1)
-  pMat <- matrix(0,1,4)
-  pMat[1,] <- c(maxC1, T1, T1 > maxC1, PV)
-  row.names(pMat) <- c('chiq_test')
-
-
-  colnames(pMat) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
-  class(pMat) <- 'Min-test'
-  return(pMat)
-}
-
-linReg_TOSI <- function(X, Y, alpha=0.05, seed=1, sub.frac=0.3, standardized=F){
-  library(glmnet)
-  p <- ncol(X)
-  cvlist <- cv.glmnet(X,Y)
-
-  id_lambdamin <- which.min(cvlist$cvm)
-  glmlist <- glmnet(X, Y,lambda=cvlist$lambda[id_lambdamin])
-  index_nz <- which(glmlist$beta !=0)
-  stmin1 <- RegMin(X, Y,index_nz, alpha, seed, sub.frac, standardized);
-  Tmin <- stmin1[1,4] > alpha
-  index_zero <- setdiff(1:p, index_nz)
-  stmax1 <- RegMax(X, Y,  index_zero, alpha, seed, sub.frac, standardized);
-  Tmax <-  stmax1[1,4] > alpha
-  # Seek the optimal lambda by Dichotomy optimization
-  leftside <- 0; rightside <- id_lambdamin
-  k <- 1
-  while(Tmin ==T || Tmax==F){
-    if(k > 5) break
-    id_lambda <- round((leftside + rightside)/2)
-
-    glmlist <- glmnet(X, Y,lambda=cvlist$lambda[id_lambda])
-    index_nz <- which(glmlist$beta !=0)
-    stmin1 <- RegMin(X, Y,index_nz, alpha, seed, sub.frac, standardized);
-    Tmin <- stmin1[1,4] > alpha
-    if(Tmin){
-      rightside <- id_lambda
-    }
-    if(!Tmin){
-      leftside <- id_lambda
-      index_zero <- setdiff(1:p, index_nz)
-      stmax1 <- RegMax(X, Y,  index_zero, alpha, seed, sub.frac, standardized);
-      Tmax <-  stmax1[1,4] > alpha
-    }
-    cat('Searching penalty parameter for', k, '-th round\n')
-    k <- k +1
-  }
-  Xind <- X[,index_nz]
-  datXY <- data.frame(Y, Xind)
-  colnames(datXY) <- c('y', paste0('x',index_nz))
-  lmreg <- lm(y~., data=datXY)
-  slmreg <- list()
-  slmreg$lmreg <- lmreg
-  slmreg$glmnet <- glmlist
-  slmreg$Infer <- list(min_test=stmin1, max_test = stmax1)
-
-  return(slmreg)
-}
-
-
-MultiRegMax <- function(X, Y,  G1, Nsplit = 5, alpha=0.05, seed=1, sub.frac=0.5, standardized=F){
-  require(glmnet)
-  require(hdi)
-  require(SIS)
-  require(scalreg)
-  n <- dim(X)[1]
-  p <- dim(X)[2]
-  if(length(G1)<10){
-    sub.frac <- 0.2
-  }
-  n1 <- floor(sub.frac*n)
-  n0 <- n-floor(n1)
-
-  Tvec <- numeric(Nsplit)
-  for(i in 1:Nsplit){
-    # Devide sample into two parts
-    set.seed(seed+i)
-    S1 <- sample(1:n, n1, replace=FALSE)
-    X.sub <- X[S1,]
-    if(standardized){
-      X.sub <- scale(X.sub)
-    }
-    Y.sub <- Y[S1]
-    cvfit <- cv.glmnet(X.sub, Y.sub, intercept=FALSE)
-    cf <- as.numeric(coef(cvfit, s="lambda.min"))[-1]
-    cf_testset <- cf[G1]
-    # sort the coefficients
-    K <- min(1, length(G1) ) # only caputure the maximum coefs.
-    id_test.set <- order(abs(cf_testset), decreasing = T)[1:K]
-    test.set <- G1[id_test.set]
-    tsXid <- setdiff(1:n, S1)
-    Xts <- X[tsXid, ]; n0 <- nrow(Xts)
-    Yts <- Y[tsXid]
-
-
-    score.nodewiselasso = getFromNamespace("score.nodewiselasso", "hdi")
-    node <- score.nodewiselasso(Xts, wantTheta=TRUE, verbose=FALSE, lambdaseq="quantile",
-                                parallel=FALSE, ncores=2, oldschool = FALSE, lambdatuningfactor = 1)
-    Theta <- node$out
-    Gram<- t(Xts)%*%Xts/n0
-
-    sreg <- scalreg::scalreg(Xts,Yts)
-    beta.hat <- sreg$coefficients
-    sigma.sq <- sum((Yts-Xts%*%beta.hat)^2)/(n0-sum(abs(beta.hat)>0))
-
-    index <- test.set
-
-    Omega <- (t(Theta[,index])%*%Gram%*%Theta[,index])*sigma.sq
-    beta.db <- beta.hat[index]+Theta[index,]%*%t(Xts)%*%(Yts-Xts%*%beta.hat)/n0
-    Tvec[i] <- n*beta.db^2 / Omega;
-  }
-  T1 <- median(Tvec)
-  maxC1 <- qchisq(1-alpha, 1)
-  PV <-  1- pchisq(T1, 1)
-  pMat <- matrix(0,1,4)
-  pMat[1,] <- c(maxC1, T1, T1 > maxC1, PV)
-  row.names(pMat) <- c('chiq_test')
-
-
-  colnames(pMat) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
-  class(pMat) <- 'Max-test'
-  return(pMat)
-}
-
-
-MultiRegMin <- function(X, Y,  G2, Nsplit = 5, alpha=0.05, seed=1, sub.frac=0.5, standardized=F){
-  require(glmnet)
-  require(hdi)
-  require(SIS)
-  require(scalreg)
-  n <- dim(X)[1]
-  p <- dim(X)[2]
-  if(length(G2)<10){
-    sub.frac <- 0.2
-  }
-  n1 <- floor(sub.frac*n)
-  n0 <- n-floor(n1)
-  Tvec <- numeric(Nsplit)
-  for(i in 1:Nsplit){
-    # Devide sample into two parts
-    set.seed(i+seed)
-    S1 <- sample(1:n, n1, replace=FALSE)
-    X.sub <- X[S1,]
-    if(standardized){
-      X.sub <- scale(X.sub)
-    }
-    Y.sub <- Y[S1]
-    lambda <- 1e-7
-    glmnet1 <- glmnet(X.sub, Y.sub, lambda=lambda)
-    cf <- coef(glmnet1)[-1]
-    cf_testset <- cf[G2]
-    # sort the coefficients
-    K <- min(1, length(G2) ) # only caputure the minimum coef.
-    id_test.set <- order(abs(cf_testset))[1:K]
-    test.set <- G2[id_test.set]
-    tsXid <- setdiff(1:n, S1)
-    Xts <- X[tsXid, ]; n0 <- nrow(Xts)
-    Yts <- Y[tsXid]
-
-
-    score.nodewiselasso = getFromNamespace("score.nodewiselasso", "hdi")
-    node <- score.nodewiselasso(Xts, wantTheta=TRUE, verbose=FALSE, lambdaseq="quantile",
-                                parallel=FALSE, ncores=2, oldschool = FALSE, lambdatuningfactor = 1)
-    Theta <- node$out
-    Gram<- t(Xts)%*%Xts/n0
-
-    sreg <- scalreg::scalreg(Xts,Yts)
-    beta.hat <- sreg$coefficients
-    sigma.sq <- sum((Yts-Xts%*%beta.hat)^2)/(n0-sum(abs(beta.hat)>0))
-
-    index <- test.set
-
-    Omega <- (t(Theta[,index])%*%Gram%*%Theta[,index])*sigma.sq
-    beta.db <- beta.hat[index]+Theta[index,]%*%t(Xts)%*%(Yts-Xts%*%beta.hat)/n0
-    Tvec[i] <- n*beta.db^2 / Omega;
-  }
-  T1 <- median(Tvec)
-  maxC1 <- qchisq(1-alpha, 1)
-  PV <-  1- pchisq(T1, 1)
-  pMat <- matrix(0,1,4)
-  pMat[1,] <- c(maxC1, T1, T1 > maxC1, PV)
-  row.names(pMat) <- c('chiq_test')
-
-
-  colnames(pMat) <- c('CriticalValue', 'TestStatistic', 'reject_status', 'p-value')
-  class(pMat) <- 'Max-test'
-  return(pMat)
-}
-

@@ -1,9 +1,17 @@
 Package: TOSI
 Type: Package
-Title: TwO-directional SImultaneous inference for high-dimensional models
-Version: 0.1.3
-Update: 2020-07-30
-Author: Wei Liu
+Title: Two-directional Simultaneous Inference for High-dimensional Models
+Version: 0.2.0
+Update: 2023-01-18
+Authors@R: 
+    c(person(given = "Wei",
+             family = "Liu",
+             role = c("aut", "cre"),
+             email = "wei.liu@duke-nus.edu.sg"),
+      person(given = "Huazhen",
+             family = "Lin",
+             role = c("aut")))
+Author: Wei Liu [aut, cre], Huazhen Lin [aut]
 Maintainer: Wei Liu <weiliu@smail.swufe.edu.cn>
 Description: This package provides a general framework of two directional simultaneous inference
     (TOSI) for high-dimensional as well as the fixed dimensional models with manifest
@@ -12,7 +20,9 @@ Description: This package provides a general framework of two directional simult
     TOSI is making the simultaneous inference on a set of parameters from two directions,
     one is testing whether the estimated zero parameters indeed are zero and the other is
     testing whether there exists zero in the parameter set of non-zero.
-Depends: MASS
+Depends: MASS, hdi, scalreg, glmnet
+URL: https://github.com/feiyoung/TOSI
+BugReports: https://github.com/feiyoung/TOSI/issues
 License: GPL
 Encoding: UTF-8
 LazyData: true

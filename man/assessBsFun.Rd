@@ -2,7 +2,7 @@
 \alias{assessBFun}
 \title{Assess the performance of group-sparse loading estimate}
 \description{
-  Evaluate the model selection consistency rate (SCR), F-measure and the smallest canonical correlation.
+  Evaluate the model selection consistency rate (SCR), F-measure and the smallest canonical correlation and the larger values mean better peformance in model selection and parameter estimation.
 }
 \usage{
   assessBFun(hB, B0)

@@ -39,10 +39,10 @@
 \examples{
   datlist1 <- gendata_Fac(n= 100, p = 500)
   X <- datlist1$X
-  spfac <- gsspFactorm(X, q=NULL)
+  spfac <- gsspFactorm(X, q=NULL) # use default values for lambda's.
   assessBsFun(spfac$sphB, datlist1$B0)
 
-  biclist <- bic.spfac(datlist1$X, c2.max=20,nlamb1 = 10)
+  biclist <- bic.spfac(datlist1$X, c2.max=20,nlamb1 = 10) # # select lambda's values using BIC.
   plot(biclist$bic1[,2:3], type='o')
   plot(biclist$bic2[,2:3], type='o')
   spfac <- gsspFactorm(X, q=NULL,biclist$lambda1.min, biclist$lambda2.min)
