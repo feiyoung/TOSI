@@ -5,7 +5,8 @@
   Conduct the simultaneous inference for a set of loading vectors in the NUll hypothesises H01 that assumes the set of loading vectors are all zeroes.
 }
 \usage{
-  FacRowMaxST(X, G1, q=NULL, Nsplit= 5, sub.frac=0.5, alpha=0.05, standardized=FALSE,seed=1)
+  FacRowMaxST(X, G1, q=NULL, Nsplit= 5, sub.frac=0.5,
+              alpha=0.05, standardized=FALSE,seed=1)
 }
 \arguments{
   \item{X}{a \code{n}-by-\code{p} matrix, the observed data}

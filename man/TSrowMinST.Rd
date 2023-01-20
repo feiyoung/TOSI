@@ -5,7 +5,8 @@
   Conduct the simultaneous inference for a set of loading vectors inr the NUll hypothesises H02 that assumes there is zero loading vector in the set of loading vectors.
 }
 \usage{
-  FacRowMinST(X, G2,  q=NULL, Nsplit= 5, sub.frac=0.5, alpha=0.05, standardized=F,seed=1)
+  FacRowMinST(X, G2,  q=NULL, Nsplit= 5, sub.frac=0.5,
+              alpha=0.05, standardized=FALSE,seed=1)
 }
 \arguments{
   \item{X}{a \code{n}-by-\code{p} matrix, the observed data}

@@ -40,7 +40,8 @@
   assessBsFun(spfac$sphB, datlist1$B0)
   lambda1_set <- seq(0.2, 2, by=0.3)
   lambda2_set <- 1:8
-  lamList <- cv.spfac(X, lambda1_set, lambda2_set, nfolds=5) # select lambda's values using CV method.
+  # select lambda's values using CV method.
+  lamList <- cv.spfac(X, lambda1_set, lambda2_set, nfolds=5)
   spfac <- gsspFactorm(X, q=NULL,lamList$lamcv.min[1], lamList$lamcv.min[2])
   assessBsFun(spfac$sphB, datlist1$B0)
 

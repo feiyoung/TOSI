@@ -5,15 +5,15 @@
   Conduct the simultaneous inference for a set of regression coefficients in the null hypothesises H01 that assume the set of regression coefficients components are all zeroes.
 }
 \usage{
-  RegMax(X, Y,  G1, Nsplit = 5, alpha=0.05, seed=1, sub.frac=0.5, standardized=F)
+  RegMax(X, Y,  G1, Nsplit = 5, sub.frac=0.5, alpha=0.05, seed=1,  standardized=F)
 }
 \arguments{
   \item{X}{a \code{n}-by-\code{p} matrix, the observed covariates matrix.}
   \item{Y}{a \code{n}-dimensional vector, the observed response vector.}
   \item{G1}{a positive vector with values between 1 and p, the set of H01.}
   \item{Nsplit}{a positive integer, the random split times used, default as 5.}
-  \item{alpha}{a positive real, the significance level.}
   \item{sub.frac}{a positive number between 0 and 1, the proportion of the sample used in the stage I.}
+  \item{alpha}{a positive real, the significance level.}
   \item{seed}{a non-negative integer, the random seed.}
   \item{standardized}{a logical value, whether standerdize the covariates matrix in the stage I.}
 }
@@ -33,14 +33,17 @@
   \code{\link{gendata_Reg}}
 }
 \examples{
-  ### Example
-  n <- 100; p <- 20;i <- 1
-  s0 <- 5 # First five components are nonzeros
-  rho <- 1;
-  dat1 <- gendata_Reg(n, p, s0, seed=i, rho)
-  # ex1: H01 is false
-  RegMax(dat1$X, dat1$Y, 1:p)
-  # ex1: H01 is true
-  RegMax(dat1$X, dat1$Y, p)
+  \dontrun{
+    ### Example
+    n <- 50; p <- 20;i <- 1
+    s0 <- 5 # First five components are nonzeros
+    rho <- 1;
+    dat1 <- gendata_Reg(n, p, s0, seed=i, rho)
+    # ex1: H01 is false
+    RegMax(dat1$X, dat1$Y, 1:p)
+    # ex1: H01 is true
+    RegMax(dat1$X, dat1$Y, p)
+  }
+
 }
 \keyword{Simultanous inference}

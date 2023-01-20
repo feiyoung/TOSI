@@ -5,16 +5,16 @@
   Conduct the simultaneous inference for a set of mean components in the the Null hypothesises H02 that assumes the set of mean components exist zero.
 }
 \usage{
-  MeanMin(X, G2, Nsplit = 5, alpha=0.05, frac.size=0.5, seed=1, standardized=F)
+  MeanMin(X, test.set, Nsplit = 5, frac.size=0.5, standardized=F, alpha=0.05, seed=1)
 }
 \arguments{
   \item{X}{a \code{n}-by-\code{p} matrix, the observed data}
-  \item{G2}{a positive vector with values between 1 and p, the set of H02.}
+  \item{test.set}{a positive vector with values between 1 and p, the set of H02.}
   \item{Nsplit}{a positive integer, the random split times used, default as 5.}
-  \item{alpha}{a positive number, the significant level.}
   \item{frac.size}{a positive number between 0 and 1, the proportion of the sample used in stage I.}
-  \item{seed}{a non-negative integer, the random seed.}
   \item{standardized}{a logical value, whether standerdize in stage I.}
+  \item{alpha}{a positive number, the significant level.}
+   \item{seed}{a non-negative integer, the random seed.}
 }
 
 \value{

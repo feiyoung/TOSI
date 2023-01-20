@@ -27,6 +27,7 @@ score.partialnodewiselasso <- function (x, index_set,wantTheta = FALSE, verbose 
   nodewise.getlambdasequence.old = getFromNamespace("nodewise.getlambdasequence.old", "hdi")
   cv.nodewise.bestlambda = getFromNamespace("cv.nodewise.bestlambda", "hdi")
   improve.lambda.pick <- getFromNamespace("improve.lambda.pick", "hdi")
+  score.getZforlambda <- getFromNamespace("score.getZforlambda", "hdi")
 
   lambdas <- switch(lambdaseq, quantile = nodewise.getlambdasequence(x),
                     linear = nodewise.getlambdasequence.old(x, verbose),
@@ -136,11 +137,11 @@ getTheta <- function(Xts, index_set){
 }
 
 
-RegMax <- function(X, Y,  G1, Nsplit = 5, alpha=0.05, seed=1, sub.frac=0.5, standardized=F){
-  require(glmnet)
-  require(hdi)
-  require(SIS)
-  require(scalreg)
+RegMax <- function(X, Y,  G1, Nsplit = 5, sub.frac=0.5, alpha=0.05, seed=1,  standardized=F){
+  # require(glmnet)
+  # require(hdi)
+  # require(SIS)
+  # require(scalreg)
   n <- dim(X)[1]
   p <- dim(X)[2]
 
@@ -210,11 +211,8 @@ RegMax <- function(X, Y,  G1, Nsplit = 5, alpha=0.05, seed=1, sub.frac=0.5, stan
   return(res)
 }
 
-RegMin <- function(X, Y,  G2, Nsplit = 5, alpha=0.05, seed=1, sub.frac=0.5, standardized=F){
-  require(glmnet)
-  require(hdi)
-  require(SIS)
-  require(scalreg)
+RegMin <- function(X, Y,  G2, Nsplit = 5, sub.frac=0.5, alpha=0.05, seed=1,  standardized=F){
+
   n <- dim(X)[1]
   p <- dim(X)[2]
 

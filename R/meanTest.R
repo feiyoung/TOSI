@@ -10,7 +10,7 @@ gendata_Mean <- function(n, p, s0= floor(p/2), seed=1, rho= 1, tau=1){
 
 
 
-MeanMax <- function(X, test.set, Nsplit = 5, alpha=0.05,frac.size=0.5, standardized=F){
+MeanMax <- function(X, test.set, Nsplit = 5,frac.size=0.5, standardized=F,alpha=0.05, seed=1){
 
   ## Conservative inference by combing p-values based on quantile.
 
@@ -20,7 +20,7 @@ MeanMax <- function(X, test.set, Nsplit = 5, alpha=0.05,frac.size=0.5, standardi
   Pvec <- numeric(Nsplit)
   for(im in 1: Nsplit){
 
-    set.seed(im)
+    set.seed(im+seed)
     ids <- sample(n, ns)
     hmu <- colMeans(X[ids,])
     abs_muG <- abs(hmu[test.set])
@@ -63,7 +63,7 @@ MeanMax <- function(X, test.set, Nsplit = 5, alpha=0.05,frac.size=0.5, standardi
 }
 
 
-MeanMin <- function(X, test.set, Nsplit = 5, alpha=0.05,frac.size=0.5, standardized=F){
+MeanMin <- function(X, test.set, Nsplit = 5, frac.size=0.5, standardized=F, alpha=0.05, seed=1){
 
   ## Conservative inference by combing p-values based on quantile.
   n <- nrow(X)
@@ -72,7 +72,7 @@ MeanMin <- function(X, test.set, Nsplit = 5, alpha=0.05,frac.size=0.5, standardi
   Pvec <- numeric(Nsplit)
   for(im in 1: Nsplit){
 
-    set.seed(im)
+    set.seed(im+seed)
     ids <- sample(n, ns)
     hmu <- colMeans(X[ids,])
     abs_muG <- abs(hmu[test.set])

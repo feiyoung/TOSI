@@ -1,11 +1,11 @@
-\name{assessBFun}
-\alias{assessBFun}
+\name{assessBsFun}
+\alias{assessBsFun}
 \title{Assess the performance of group-sparse loading estimate}
 \description{
   Evaluate the model selection consistency rate (SCR), F-measure and the smallest canonical correlation and the larger values mean better peformance in model selection and parameter estimation.
 }
 \usage{
-  assessBFun(hB, B0)
+  assessBsFun(hB, B0)
 }
 \arguments{
   \item{hB}{a \code{p}-by-\code{q} matrix, the estimated loading matrix.}

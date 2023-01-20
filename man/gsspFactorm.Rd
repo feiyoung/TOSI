@@ -47,11 +47,6 @@
 
   Bind <- ifelse(dat$B0==0, 0, 1)
   hBind <- ifelse(res$sphB==0, 0, 1)
-  ## structure of loading matrix
-  image(x=1:nrow(Bind), y= 1:ncol(Bind), z=Bind , col = 1:3,#hcl.colors(12, "YlOrRd",rev=F),
-        ylab='columns', xlab='rows',cex.lab=1.8, cex.axis=1.6 )
-  image(x=1:nrow(Bind), y= 1:ncol(Bind), z=hBind , col = 1:3,#hcl.colors(12, "YlOrRd",rev=F),
-        ylab='columns', xlab='rows',cex.lab=1.8, cex.axis=1.6 )
 
   ## Select good penalty parameters
   dat <- gendata_Fac(n = 300, p = 200)
@@ -66,10 +61,7 @@
   ## comparison of structure of loading matrix
   Bind <- ifelse(dat$B0==0, 0, 1)
   hBind <- ifelse(res$sphB==0, 0, 1)
-  image(x=1:nrow(Bind), y= 1:ncol(Bind), z=Bind , col = 1:3,#hcl.colors(12, "YlOrRd",rev=F),
-        ylab='columns', xlab='rows',cex.lab=1.8, cex.axis=1.6, main='True')
-  image(x=1:nrow(Bind), y= 1:ncol(Bind), z=hBind , col = 1:3,#hcl.colors(12, "YlOrRd",rev=F),
-        ylab='columns', xlab='rows',cex.lab=1.8, cex.axis=1.6, main='Est.' )
+
 
 
 }
