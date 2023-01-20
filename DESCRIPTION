@@ -21,43 +21,6 @@ Description: A general framework of two directional simultaneous inference
     one is testing whether the estimated zero parameters indeed are zero and the other is
     testing whether there exists zero in the parameter set of non-zero. More details can be 
     referred to Wei Liu, et al. (2022) <doi:10.48550/arXiv.2012.11100>.
-License: GPL-3
-Depends: 
-    parallel,
-    gtools,
-    R (>= 4.0.0)
-Imports: 
-    GiRaF,
-    MASS,
-    Matrix,
-    mclust,
-    methods,
-    purrr,
-    utils,
-    Seurat,
-    cowplot,
-    patchwork,
-    scater,
-    pbapply, 
-    ggthemes, 
-    dplyr,
-    ggplot2,
-    stats,
-    DR.SC, 
-    scales,
-    Rcpp (>= 1.0.5)
-LazyData: true
-URL: https://github.com/feiyoung/PRECAST
-BugReports: https://github.com/feiyoung/PRECAST/issues
-Suggests: 
-    knitr,
-    rmarkdown
-LinkingTo: 
-    Rcpp,
-    RcppArmadillo
-VignetteBuilder: 
-    knitr
-Encoding: UTF-8
 Depends: 
     R (>= 4.0.0)
 Imports: MASS, hdi, scalreg, glmnet
