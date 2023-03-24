@@ -5,7 +5,7 @@
   Conduct the simultaneous inference for a set of regression coefficients in a null hypothesises H02 that assumes the set of regression coefficients components exist zero.
 }
 \usage{
-  RegMin(X, Y,  G2, Nsplit = 5, sub.frac=0.5, alpha=0.05, seed=1,  standardized=F)
+  RegMin(X, Y,  G2, Nsplit = 5, sub.frac=0.5, alpha=0.05, seed=1,  standardized=FALSE)
 }
 \arguments{
   \item{X}{a \code{n}-by-\code{p} matrix, the observed covariates matrix.}

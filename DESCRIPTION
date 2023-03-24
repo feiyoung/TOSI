@@ -1,8 +1,8 @@
 Package: TOSI
 Type: Package
 Title: Two-Directional Simultaneous Inference for High-Dimensional Models
-Version: 0.2.0
-Update: 2023-01-20
+Version: 0.3.0
+Date: 2023-01-26
 Authors@R: 
     c(person(given = "Wei",
              family = "Liu",
@@ -20,7 +20,7 @@ Description: A general framework of two directional simultaneous inference
     It is making the simultaneous inference on a set of parameters from two directions,
     one is testing whether the estimated zero parameters indeed are zero and the other is
     testing whether there exists zero in the parameter set of non-zero. More details can be 
-    referred to Wei Liu, et al. (2022) <doi:10.48550/arXiv.2012.11100>.
+    referred to Wei Liu, et al. (2023) <doi:10.1080/07350015.2023.2191672>.
 Depends: 
     R (>= 4.0.0)
 Imports: MASS, hdi, scalreg, glmnet

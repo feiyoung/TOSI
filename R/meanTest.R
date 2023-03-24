@@ -1,7 +1,7 @@
 # Mean testing ------------------------------------------------------------
 gendata_Mean <- function(n, p, s0= floor(p/2), seed=1, rho= 1, tau=1){
   mu <- rep(0, p)
-  set.seed(1)
+  # set.seed(1)
   mu[1:s0] <- runif(s0)* rho
   set.seed(seed)
   X <- mvrnorm(n=n, mu=mu, Sigma = tau*cor.mat(p, rho=0.5))
@@ -10,7 +10,7 @@ gendata_Mean <- function(n, p, s0= floor(p/2), seed=1, rho= 1, tau=1){
 
 
 
-MeanMax <- function(X, test.set, Nsplit = 5,frac.size=0.5, standardized=F,alpha=0.05, seed=1){
+MeanMax <- function(X, test.set, Nsplit = 5,frac.size=0.5, standardized=FALSE,alpha=0.05, seed=1){
 
   ## Conservative inference by combing p-values based on quantile.
 
@@ -63,7 +63,7 @@ MeanMax <- function(X, test.set, Nsplit = 5,frac.size=0.5, standardized=F,alpha=
 }
 
 
-MeanMin <- function(X, test.set, Nsplit = 5, frac.size=0.5, standardized=F, alpha=0.05, seed=1){
+MeanMin <- function(X, test.set, Nsplit = 5, frac.size=0.5, standardized=FALSE, alpha=0.05, seed=1){
 
   ## Conservative inference by combing p-values based on quantile.
   n <- nrow(X)

@@ -34,9 +34,9 @@ cor.mat <- function (p, rho, type = "toeplitz")
 # Factor model ------------------------------------------------------------
 
 
-gendata_Fac <- function(n, p, seed=1, q=6, pzero= floor(p/4), sigma2=0.1, gamma=1, heter=F, rho=1){
+gendata_Fac <- function(n, p, seed=1, q=6, pzero= floor(p/4), sigma2=0.1, gamma=1, heter=FALSE, rho=1){
   # sigma2 <- 0.1; heter=F
-  set.seed(1)
+  #set.seed(1)
 
   psub <- p - pzero
   p1_bar <- floor(psub/q)

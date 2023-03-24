@@ -5,7 +5,8 @@
   Generate simulated data from high dimensional sparse factor model.
 }
 \usage{
-  gendata_Fac(n, p, seed=1, q=6, pzero= floor(p/4), sigma2=0.1, gamma=1, heter=F, rho=1)
+  gendata_Fac(n, p, seed=1, q=6, pzero= floor(p/4),
+              sigma2=0.1, gamma=1, heter=FALSE, rho=1)
 
 }
 \arguments{

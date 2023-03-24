@@ -40,7 +40,7 @@
   res <- gsspFactorm(dat$X)
   ccorFun(res$hH, dat$H0) # the smallest canonical correlation
   ## comparison of l2 norm
-  par(mar=c(5,5,2,2), mfrow=c(1,2))
+  oldpar <- par(mar = c(5, 5, 2, 2), mfrow = c(1, 2))
   plot(rowSums(dat$B0^2), type='o', ylab='l2B', main='True')
   l2B <- rowSums(res$sphB^2)
   plot(l2B, type='o', main='Est.')
@@ -61,7 +61,7 @@
   ## comparison of structure of loading matrix
   Bind <- ifelse(dat$B0==0, 0, 1)
   hBind <- ifelse(res$sphB==0, 0, 1)
-
+  par(oldpar)
 
 
 }

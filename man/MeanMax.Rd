@@ -5,7 +5,7 @@
   Conduct the simultaneous inference for a set of mean components in the NUll hypothesises H01 that assumes the set of mean components are all zeroes.
 }
 \usage{
-  MeanMax(X, test.set, Nsplit = 5,frac.size=0.5, standardized=F,alpha=0.05, seed=1)
+  MeanMax(X, test.set, Nsplit = 5,frac.size=0.5, standardized=FALSE,alpha=0.05, seed=1)
 }
 \arguments{
   \item{X}{a \code{n}-by-\code{p} matrix, the observed data}

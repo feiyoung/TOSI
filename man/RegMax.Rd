@@ -5,7 +5,7 @@
   Conduct the simultaneous inference for a set of regression coefficients in the null hypothesises H01 that assume the set of regression coefficients components are all zeroes.
 }
 \usage{
-  RegMax(X, Y,  G1, Nsplit = 5, sub.frac=0.5, alpha=0.05, seed=1,  standardized=F)
+  RegMax(X, Y,  G1, Nsplit = 5, sub.frac=0.5, alpha=0.05, seed=1,  standardized=FALSE)
 }
 \arguments{
   \item{X}{a \code{n}-by-\code{p} matrix, the observed covariates matrix.}
@@ -33,9 +33,9 @@
   \code{\link{gendata_Reg}}
 }
 \examples{
-  \dontrun{
+  \donttest{
     ### Example
-    n <- 50; p <- 20;i <- 1
+    n <- 50; p <- 20; i <- 1
     s0 <- 5 # First five components are nonzeros
     rho <- 1;
     dat1 <- gendata_Reg(n, p, s0, seed=i, rho)
@@ -44,6 +44,5 @@
     # ex1: H01 is true
     RegMax(dat1$X, dat1$Y, p)
   }
-
 }
 \keyword{Simultanous inference}

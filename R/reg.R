@@ -1,6 +1,6 @@
 # Regssion testing --------------------------------------------------------
 gendata_Reg <- function(n=100, p = 20, s0=5, rho=1, seed=1){
-  set.seed(1)
+  # set.seed(1)
   beta <- rep(0,p)
   beta[1:s0] <- runif(s0,0,2) *rho
   set.seed(seed)
@@ -137,7 +137,7 @@ getTheta <- function(Xts, index_set){
 }
 
 
-RegMax <- function(X, Y,  G1, Nsplit = 5, sub.frac=0.5, alpha=0.05, seed=1,  standardized=F){
+RegMax <- function(X, Y,  G1, Nsplit = 5, sub.frac=0.5, alpha=0.05, seed=1,  standardized=FALSE){
   # require(glmnet)
   # require(hdi)
   # require(SIS)
@@ -211,7 +211,7 @@ RegMax <- function(X, Y,  G1, Nsplit = 5, sub.frac=0.5, alpha=0.05, seed=1,  sta
   return(res)
 }
 
-RegMin <- function(X, Y,  G2, Nsplit = 5, sub.frac=0.5, alpha=0.05, seed=1,  standardized=F){
+RegMin <- function(X, Y,  G2, Nsplit = 5, sub.frac=0.5, alpha=0.05, seed=1,  standardized=FALSE){
 
   n <- dim(X)[1]
   p <- dim(X)[2]
