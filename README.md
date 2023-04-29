@@ -6,7 +6,7 @@
 <!-- badges: end -->
 
 # TOSI
-This package provides a general framework of two directional simultaneous inference(TOSI) for high-dimensional  as well as the fixed dimensional models with manifest variable or latent variable structure, such as high-dimensional mean models, high-dimensional sparse regression models, and high-dimensional latent factor models.
+This package provides a general framework of two directional simultaneous inference(TOSI) for high-dimensional  as well as the fixed dimensional models with manifest variable or latent variable structure, such as high-dimensional mean models, high-dimensional sparse regression models, and high-dimensional latent factor models. 
 
 Please see our new paper for model details:
 
@@ -24,3 +24,5 @@ Or install the the packages "TOSI" from 'CRAN'
 ```{Rmd}
 install.packages("TOSI")
 ```
+
+# The simulation codes are in the folder `Rcode_simu`.
