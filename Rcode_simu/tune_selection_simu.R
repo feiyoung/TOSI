@@ -1,9 +1,6 @@
 
 ### Compare the tuning parameter selection------------------------------
 
-
-
-setwd("D:\\LearnFiles\\Research paper\\Sparse factor inference\\Rcode\\Rcode_submits\\")
 source("definedFunctions.R")
 n <- 50;  # 50 or 100
 p <- 50

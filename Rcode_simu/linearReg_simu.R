@@ -1,5 +1,4 @@
 
-setwd("D:\\LearnFiles\\Research paper\\Sparse factor inference\\Rcode\\Rcode_submits\\")
 source("definedFunctions.R")
 # Data generating function ------------------------------------------------
 
