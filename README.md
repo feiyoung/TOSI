@@ -25,4 +25,5 @@ Or install the the packages "TOSI" from 'CRAN'
 install.packages("TOSI")
 ```
 
-# The simulation codes are in the folder `Rcode_simu`.
+# Simulation
+The simulation codes are in the folder `Rcode_simu`.
